@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow all origins for CORS
 @RequestMapping("/api/leave-balances")
 public class LeaveBalanceController {
 

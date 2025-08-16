@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow all origins for CORS
 @RequestMapping("/api/leave-types")
 public class LeaveTypeController {
 

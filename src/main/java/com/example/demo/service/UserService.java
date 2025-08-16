@@ -63,24 +63,27 @@ public class UserService {
     }
 
     private void mapDtoToUser(UserDTO userDTO, User user, boolean setPassword) {
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setRole(userDTO.getRole());
+    user.setName(userDTO.getName());
+    user.setEmail(userDTO.getEmail());
+    
+    // Assign default role if none provided
+    user.setRole(userDTO.getRole() != null ? userDTO.getRole() : User.Role.EMPLOYEE);
 
-        if (setPassword) {
-            String password = (userDTO.getPassword() == null || userDTO.getPassword().isEmpty())
-                    ? "default123"
-                    : userDTO.getPassword();
-            user.setPasswordHash(passwordEncoder.encode(password));
-        }
-
-        if (userDTO.getManagerId() != null) {
-            userRepository.findById(userDTO.getManagerId())
-                    .ifPresent(user::setManager);
-        } else {
-            user.setManager(null);
-        }
+    if (setPassword) {
+        String password = (userDTO.getPassword() == null || userDTO.getPassword().isEmpty())
+                ? "default123"
+                : userDTO.getPassword();
+        user.setPasswordHash(passwordEncoder.encode(password));
     }
+
+    if (userDTO.getManagerId() != null) {
+        userRepository.findById(userDTO.getManagerId())
+                .ifPresent(user::setManager);
+    } else {
+        user.setManager(null);
+    }
+}
+
 
     public User login(String email, String password) {
         User user = userRepository.findByEmail(email).orElse(null);

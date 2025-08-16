@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow all origins for CORS
 @RequestMapping("/api/users")
 public class UserController {
     @Autowired
@@ -42,11 +43,28 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // @PostMapping("/register")
+    // public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
+    //     User createdUser = userService.createUser(userDTO);
+    //     return ResponseEntity.ok(UserDTO.fromEntity(createdUser));
+    // }
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
+public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+    if (userService.getUserByEmail(userDTO.getEmail()) != null) {
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("message", "Email already exists"));
+    }
+    try {
         User createdUser = userService.createUser(userDTO);
         return ResponseEntity.ok(UserDTO.fromEntity(createdUser));
+    } catch (Exception e) {
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("message", "Registration failed: " + e.getMessage()));
     }
+}
+
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {

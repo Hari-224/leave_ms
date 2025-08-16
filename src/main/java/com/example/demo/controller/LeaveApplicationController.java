@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*") // Allow all origins for CORS
 @RequestMapping("/api/leave-applications")
 public class LeaveApplicationController {
 
